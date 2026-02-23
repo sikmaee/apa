@@ -1,178 +1,127 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DP-TOOLKIT | Enterprise API</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <script src="https://unpkg.com/@phosphor-icons/web"></script>
-  <style>
-    body { background: #020617; color: #f8fafc; font-family: 'Inter', sans-serif; }
-    .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.05); }
-    .accent-grad { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
-    [v-cloak] { display: none; }
-  </style>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        body { background: #020617; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
+        .gradient-text { background: linear-gradient(to right, #6366f1, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .active-tab { background: #6366f1; box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
+    </style>
 </head>
-<body class="min-h-screen p-4 md:p-10">
-  <div id="app" v-cloak class="max-w-6xl mx-auto space-y-8">
-    
-    <header class="flex flex-col md:flex-row justify-between items-center glass p-8 rounded-[2.5rem] gap-6">
-      <div class="flex items-center gap-5">
-        <div class="w-14 h-14 accent-grad rounded-2xl flex items-center justify-center shadow-2xl shadow-indigo-500/20">
-          <i class="ph-fill ph-lightning text-3xl text-white"></i>
-        </div>
-        <div>
-          <h1 class="text-2xl font-black tracking-tighter uppercase">DP-Toolkit API</h1>
-          <p class="text-indigo-400 text-xs font-bold tracking-[0.2em]">GLOBAL ENDPOINT SYSTEM</p>
-        </div>
-      </div>
-      <div class="flex gap-4">
-        <div class="text-right">
-            <p class="text-[10px] text-slate-500 font-bold uppercase">System Status</p>
-            <p class="text-sm font-semibold text-emerald-400">● All Systems Operational</p>
-        </div>
-      </div>
-    </header>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      
-      <div class="lg:col-span-2 glass p-10 rounded-[3rem] space-y-8">
-        <div class="flex items-center justify-between">
-            <h2 class="text-xl font-bold">Cloud Image Hosting</h2>
-            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold text-slate-400">POWERED BY CATBOX</span>
-        </div>
-
-        <div class="relative group">
-            <div class="border-2 border-dashed border-slate-800 group-hover:border-indigo-500/50 rounded-[2rem] p-16 text-center transition-all bg-slate-900/30">
-                <input type="file" @change="handleUpload" class="absolute inset-0 opacity-0 cursor-pointer" :disabled="loading">
-                <i class="ph ph-cloud-arrow-up text-6xl text-slate-700 group-hover:text-indigo-400 transition mb-4"></i>
-                <p class="text-slate-500 font-medium">Click or drag your image here</p>
+<body class="p-6">
+    <div id="app" v-cloak class="max-w-5xl mx-auto space-y-6">
+        
+        <nav class="glass p-6 rounded-[2rem] flex justify-between items-center shadow-2xl">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
+                    <i class="ph-fill ph-cpu text-2xl"></i>
+                </div>
+                <h1 class="text-xl font-black tracking-tighter uppercase gradient-text">DP-Toolkit</h1>
             </div>
-            <div v-if="loading" class="absolute inset-0 bg-slate-950/80 rounded-[2rem] flex items-center justify-center backdrop-blur-sm">
-                <div class="flex flex-col items-center gap-3">
-                    <div class="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                    <p class="font-bold text-indigo-400">Uploading to Cloud...</p>
+            <div class="flex items-center gap-4 text-xs font-bold text-slate-400">
+                <span class="flex items-center gap-1"><div class="w-2 h-2 bg-green-500 rounded-full"></div> LIVE SERVER</span>
+            </div>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 glass p-8 rounded-[2.5rem] space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-lg font-bold">Cloud Uploader</h2>
+                    <div class="bg-slate-900 p-1 rounded-xl flex gap-1 border border-slate-800">
+                        <button @click="provider = 'catbox'" :class="provider === 'catbox' ? 'active-tab text-white' : 'text-slate-500'" class="px-4 py-1.5 rounded-lg text-[10px] font-black transition-all">CATBOX</button>
+                        <button @click="provider = 'github'" :class="provider === 'github' ? 'active-tab text-white' : 'text-slate-500'" class="px-4 py-1.5 rounded-lg text-[10px] font-black transition-all">GITHUB</button>
+                    </div>
+                </div>
+
+                <label class="relative border-2 border-dashed border-slate-800 rounded-3xl p-16 flex flex-col items-center justify-center group hover:border-indigo-500/50 transition-all cursor-pointer bg-slate-950/30">
+                    <input type="file" @change="uploadFile" class="hidden" :disabled="loading">
+                    <i class="ph ph-image-square text-5xl text-slate-700 group-hover:text-indigo-400 mb-3 transition"></i>
+                    <p class="text-sm text-slate-500 group-hover:text-slate-300">Tap to upload via {{ provider.toUpperCase() }}</p>
+                    <div v-if="loading" class="absolute inset-0 glass rounded-3xl flex items-center justify-center">
+                        <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                </label>
+
+                <div v-if="resultUrl" class="p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl animate-fade-in">
+                    <p class="text-[10px] font-black text-indigo-400 uppercase mb-2">Public Access Link</p>
+                    <div class="flex gap-3">
+                        <input readonly :value="resultUrl" class="bg-transparent flex-1 text-xs font-mono text-slate-300 outline-none">
+                        <button @click="copy(resultUrl)" class="text-indigo-400 hover:text-white"><i class="ph-bold ph-copy text-xl"></i></button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div v-if="resultUrl" class="space-y-3 animate-fade-in">
-            <label class="text-xs font-bold text-indigo-400 uppercase tracking-widest">Result Link</label>
-            <div class="flex gap-3 bg-black/40 p-2 rounded-2xl border border-white/5">
-                <input readonly :value="resultUrl" class="bg-transparent border-none text-sm font-mono flex-1 px-4 text-slate-300">
-                <button @click="copy(resultUrl)" class="accent-grad p-3 rounded-xl hover:scale-105 transition active:scale-95">
-                    <i class="ph ph-copy-simple text-white"></i>
-                </button>
-            </div>
-        </div>
-      </div>
-
-      <div class="space-y-8">
-        <div class="glass p-8 rounded-[2.5rem] space-y-6">
-            <h3 class="text-xs font-black text-slate-500 uppercase tracking-[0.2em]">World Nodes</h3>
             <div class="space-y-6">
-                <div v-for="c in clocks" class="flex justify-between items-center">
-                    <span class="text-sm font-semibold text-slate-400">{{c.label}}</span>
-                    <span class="text-2xl font-black font-mono tracking-tighter">{{c.time}}</span>
+                <div class="glass p-8 rounded-[2.5rem]">
+                    <h3 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-6">World Clocks</h3>
+                    <div class="space-y-4">
+                        <div v-for="c in clocks" class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400">{{c.label}}</span>
+                            <span class="text-xl font-black font-mono text-indigo-400">{{c.time}}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-[2.5rem] shadow-xl">
+                    <h3 class="text-xs font-black uppercase tracking-widest opacity-70 mb-6">Prayer Schedule</h3>
+                    <div class="grid grid-cols-2 gap-3" v-if="prayers">
+                        <div v-for="(v, k) in prayers" class="bg-black/20 p-3 rounded-xl">
+                            <p class="text-[9px] font-bold opacity-60 uppercase">{{k}}</p>
+                            <p class="text-lg font-black tracking-tighter">{{v}}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="accent-grad p-8 rounded-[2.5rem] text-white shadow-2xl shadow-indigo-500/20">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xs font-black uppercase tracking-[0.2em] opacity-80">Jadwal Sholat</h3>
-                <i class="ph-fill ph-mosque text-2xl opacity-50"></i>
-            </div>
-            <div class="grid grid-cols-2 gap-4" v-if="prayers">
-                <div v-for="(v, k) in prayers" class="bg-white/10 p-3 rounded-2xl border border-white/10">
-                    <p class="text-[9px] font-bold opacity-60 uppercase mb-1">{{k}}</p>
-                    <p class="text-lg font-black tracking-tight">{{v}}</p>
-                </div>
-            </div>
-            <p v-else class="text-center py-4 animate-pulse italic text-sm">Fetching API...</p>
-        </div>
-      </div>
-
     </div>
 
-    <div class="glass p-8 rounded-[2.5rem]">
-        <h3 class="text-sm font-black text-slate-500 uppercase mb-6 tracking-widest">Public API Documentation</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-slate-950 p-5 rounded-2xl border border-white/5">
-                <span class="text-[10px] bg-indigo-500/20 text-indigo-400 px-2 py-1 rounded font-bold mr-2">GET</span>
-                <code class="text-xs text-slate-300">/api/prayer?city=Jakarta</code>
-            </div>
-            <div class="bg-slate-950 p-5 rounded-2xl border border-white/5">
-                <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded font-bold mr-2">POST</span>
-                <code class="text-xs text-slate-300">/api/upload (Body: multipart/image)</code>
-            </div>
-        </div>
-    </div>
+    <script>
+        const { createApp, ref, onMounted } = Vue;
+        createApp({
+            setup() {
+                const provider = ref('catbox');
+                const loading = ref(false);
+                const resultUrl = ref('');
+                const prayers = ref(null);
+                const clocks = ref([]);
 
-  </div>
+                const uploadFile = async (e) => {
+                    const file = e.target.files[0];
+                    if(!file) return;
+                    loading.value = true;
+                    const fd = new FormData();
+                    fd.append('image', file);
+                    fd.append('provider', provider.value);
+                    try {
+                        const res = await fetch('/api/upload', { method: 'POST', body: fd });
+                        const data = await res.json();
+                        if(data.success) resultUrl.value = data.url;
+                    } catch (err) { alert('Failed!'); }
+                    finally { loading.value = false; }
+                };
 
-  <script>
-    const { createApp, ref, onMounted } = Vue;
+                const updateClocks = () => {
+                    const zones = [{ label: 'Jakarta', tz: 'Asia/Jakarta' }, { label: 'Mekkah', tz: 'Asia/Riyadh' }];
+                    clocks.value = zones.map(z => ({ label: z.label, time: new Intl.DateTimeFormat('id-ID', { timeStyle: 'medium', timeZone: z.tz }).format(new Date()) }));
+                };
 
-    createApp({
-      setup() {
-        const loading = ref(false);
-        const resultUrl = ref('');
-        const prayers = ref(null);
-        const clocks = ref([]);
+                const copy = (t) => { navigator.clipboard.writeText(t); alert('Copied!'); }
 
-        const handleUpload = async (e) => {
-          const file = e.target.files[0];
-          if(!file) return;
-          loading.value = true;
-          
-          const formData = new FormData();
-          formData.append('image', file);
+                onMounted(async () => {
+                    setInterval(updateClocks, 1000);
+                    const res = await fetch('/api/prayer?city=Jakarta');
+                    const d = await res.json();
+                    if(d.success) prayers.value = { Subuh: d.data.Fajr, Dzuhur: d.data.Dhuhr, Ashar: d.data.Asr, Maghrib: d.data.Maghrib, Isya: d.data.Isha };
+                });
 
-          try {
-            const res = await fetch('/api/upload', { method: 'POST', body: formData });
-            const data = await res.json();
-            if(data.success) resultUrl.value = data.url;
-          } catch (err) {
-            alert('Gagal mengunggah file.');
-          } finally {
-            loading.value = false;
-          }
-        };
-
-        const updateClocks = () => {
-          const zones = [
-            { label: 'WIB (Jakarta)', tz: 'Asia/Jakarta' },
-            { label: 'AST (Mekkah)', tz: 'Asia/Riyadh' }
-          ];
-          clocks.value = zones.map(z => ({
-            label: z.label,
-            time: new Intl.DateTimeFormat('id-ID', { timeStyle: 'medium', timeZone: z.tz }).format(new Date())
-          }));
-        };
-
-        const copy = (t) => {
-          navigator.clipboard.writeText(t);
-          alert('Link disalin ke clipboard!');
-        }
-
-        onMounted(async () => {
-          setInterval(updateClocks, 1000);
-          const res = await fetch('/api/prayer?city=Jakarta');
-          const data = await res.json();
-          if(data.success) prayers.value = {
-            Subuh: data.data.Fajr,
-            Dzuhur: data.data.Dhuhr,
-            Ashar: data.data.Asr,
-            Maghrib: data.data.Maghrib,
-            Isya: data.data.Isha
-          };
-        });
-
-        return { loading, resultUrl, handleUpload, prayers, clocks, copy };
-      }
-    }).mount('#app');
-  </script>
+                return { provider, loading, resultUrl, uploadFile, prayers, clocks, copy };
+            }
+        }).mount('#app');
+    </script>
 </body>
 </html>
